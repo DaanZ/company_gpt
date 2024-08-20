@@ -5,10 +5,10 @@ from langchain_openai import OpenAIEmbeddings
 
 from history import History
 
-openai_embeddings = OpenAIEmbeddings()
 openai_api_key = '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'
 os.environ['OPENAI_API_KEY'] = openai_api_key
 openai_client = OpenAI(api_key=openai_api_key)
+openai_embeddings = OpenAIEmbeddings()
 
 
 def llm_question(query):
