@@ -1,9 +1,7 @@
-import copy
 
 import streamlit as st
 
 from chatgpt import llm_chat
-from history import History
 from loader import load_knowledge_logs
 
 company_name = "Geico"
@@ -17,7 +15,7 @@ st.title(f"{company_name} Marketing GPT")
 
 # check for messages in session and create if not exists
 if "history" not in st.session_state.keys():
-    st.session_state.history = load_knowledge_logs()
+    st.session_state.history = load_knowledge_logs("geico.json")
     st.session_state.history.system(f"""You are a very kindly and friendly marketing assistant for {company_name}. You are
     currently having a conversation with a marketing person. Answer the questions in a kind and friendly 
     with you being the expert for {company_name} to answer any questions about marketing.""")

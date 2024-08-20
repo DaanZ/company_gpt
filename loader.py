@@ -1,11 +1,8 @@
 import json
 
 from langchain_core.documents import Document
-from langchain_openai import OpenAIEmbeddings
 
 from history import History
-
-openai_embeddings = OpenAIEmbeddings()
 
 
 def json_read_file(file_path):
