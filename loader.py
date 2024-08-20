@@ -1,10 +1,19 @@
-from cto_toolshed.ai.llm.history import History
-from cto_toolshed.util.files import json_read_file
+import json
 
 from langchain_core.documents import Document
 from langchain_openai import OpenAIEmbeddings
 
+from history import History
+
 openai_embeddings = OpenAIEmbeddings()
+
+
+def json_read_file(file_path):
+    try:
+        with open(file_path, 'r') as file:
+            return json.load(file)
+    except FileNotFoundError:
+        return []
 
 
 def load_knowledge_documents(path: str = "project.json"):
@@ -20,10 +29,9 @@ def load_knowledge_logs(path: str = "project.json"):
     texts = load_knowledge(path)
     history = History()
     for text in texts:
-        history.system(Document(page_content=text))
+        history.system(text)
 
     return history
-
 
 
 def load_knowledge(path: str = "project.json"):
@@ -56,7 +64,5 @@ def load_knowledge(path: str = "project.json"):
     return texts
 
 
-
-
 if __name__ == "__main__":
-    load_knowledge_base()
+    load_knowledge()

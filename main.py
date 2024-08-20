@@ -1,12 +1,10 @@
 import streamlit as st
-from cto_toolshed.ai.documents.query import langchain_history
-from cto_toolshed.ai.llm.history import History
 from langchain.chains.conversational_retrieval.base import ConversationalRetrievalChain
 from langchain.chat_models import ChatOpenAI
 from langchain_community.vectorstores import FAISS
 
-from company import openai_embeddings
-from loader import load_knowledge_documents
+from history import History
+from loader import load_knowledge_documents, openai_embeddings
 
 company_name = "Geico"
 st.set_page_config(
