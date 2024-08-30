@@ -1,5 +1,8 @@
+import glob
 import json
+import os
 
+from langchain_community.document_loaders import TextLoader
 from langchain_core.documents import Document
 
 from history import History
@@ -61,6 +64,16 @@ def load_knowledge(path: str = "project.json"):
         texts.append(title + ": " + chapter["recommendation"])
 
     return texts
+
+
+def history_pages(folder):
+    paths = os.path.join(folder, "*.txt")
+    history = History()
+    for path in glob.glob(paths):
+        loader = TextLoader(path, encoding="utf-8")
+        history.system(loader.load())
+    return history
+
 
 
 if __name__ == "__main__":

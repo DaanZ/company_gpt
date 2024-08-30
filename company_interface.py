@@ -2,7 +2,7 @@
 import streamlit as st
 
 from chatgpt import llm_chat
-from loader import load_knowledge_logs
+from loader import load_knowledge_logs, history_pages
 
 
 def create_interface(company_name: str, emoji: str, company_id: str):
@@ -16,7 +16,10 @@ def create_interface(company_name: str, emoji: str, company_id: str):
 
     # check for messages in session and create if not exists
     if "history" not in st.session_state.keys():
-        st.session_state.history = load_knowledge_logs(f"data/{company_id}.json")
+        if "/" in company_id:
+            st.session_state.history = history_pages(f"data/{company_id}")
+        else:
+            st.session_state.history = load_knowledge_logs(f"data/{company_id}.json")
         st.session_state.history.system(f"""You are a very kindly and friendly marketing assistant for {company_name}. You are
         currently having a conversation with a marketing person. Answer the questions in a kind and friendly 
         with you being the expert for {company_name} to answer any questions about marketing.""")
