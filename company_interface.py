@@ -5,7 +5,7 @@ from chatgpt import llm_chat
 from loader import load_knowledge_logs, history_pages
 
 
-def create_interface(company_name: str, emoji: str, company_id: str):
+def create_interface(company_name: str, emoji: str, company_id: str, optional: str = ""):
     st.set_page_config(
         page_title=f"{company_name} GPT",
         page_icon=emoji,
@@ -23,7 +23,12 @@ def create_interface(company_name: str, emoji: str, company_id: str):
         st.session_state.history.system(f"""You are a very kindly and friendly marketing assistant for {company_name}. You are
         currently having a conversation with a marketing person. Answer the questions in a kind and friendly 
         with you being the expert for {company_name} to answer any questions about marketing.""")
-        st.session_state.history.assistant("Hello there, how can I help you? " + emoji)
+        if optional:
+            st.session_state.history.system(optional)
+            with st.chat_message("system"):
+                st.write(optional)
+        st.session_state.history.assistant("Hello there, how can I help you? " + emoji + "\n")
+
 
 
     # Display all messages
