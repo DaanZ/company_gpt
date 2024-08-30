@@ -48,6 +48,8 @@ def load_knowledge(path: str = "project.json"):
     texts.append(competitor_info)
 
     for chapter in data["chapters"]:
+        if "title" not in chapter:
+            continue
         title = chapter["title"]
         for research in chapter["research"]:
             texts.append(title + " - " + research["section"] + ": " + research["report"])
