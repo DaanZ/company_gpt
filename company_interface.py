@@ -29,8 +29,6 @@ def create_interface(company_name: str, emoji: str, company_id: str, optional: s
                 st.write(optional)
         st.session_state.history.assistant("Hello there, how can I help you? " + emoji + "\n")
 
-
-
     # Display all messages
     for message in st.session_state.history.logs:
         if message["role"] == "system":
