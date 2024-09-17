@@ -71,9 +71,10 @@ def history_pages(folder):
     history = History()
     for path in glob.glob(paths):
         loader = TextLoader(path, encoding="utf-8")
-        history.system(loader.load())
+        text = loader.load()[0].page_content
+        print(text)
+        history.system(text)
     return history
-
 
 
 if __name__ == "__main__":

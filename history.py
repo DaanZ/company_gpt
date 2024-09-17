@@ -21,6 +21,11 @@ class History:
     def count(self):
         return len(self.logs)
 
+    def extend(self, other):
+        for element in other.logs:
+            self.logs.append(element)
+
+
 
 def langchain_history(history: History):
     logs = []
