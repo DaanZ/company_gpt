@@ -8,3 +8,4 @@ rootpath
 pypdf
 faiss-cpu
 python_dotenv
+beautifulsoup4
