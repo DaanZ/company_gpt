@@ -16,8 +16,8 @@ def json_read_file(file_path):
         return []
 
 
-def load_knowledge_documents(path: str = "project.json"):
-    texts = load_knowledge(path)
+def load_knowledge_documents(company_name: str, path: str = "project.json"):
+    texts = load_knowledge(company_name, path)
     pages = []
     for text in texts:
         pages.append(Document(page_content=text))
@@ -34,12 +34,12 @@ def load_knowledge_logs(path: str = "project.json"):
     return history
 
 
-def load_knowledge(path: str = "project.json"):
+def load_knowledge(company_name: str, path: str = "project.json"):
     data = json_read_file(path)
 
     texts = []
     keys = ["content", "segment", "product", "industry", "audience", "business"]
-    meta_info = "Centerline is: "
+    meta_info = company_name + " is: "
     for key in keys:
         if key in data:
             meta_info += "\n- " + key + ": " + data[key]
@@ -62,6 +62,34 @@ def load_knowledge(path: str = "project.json"):
             for s in section["sections"]:
                 texts.append(title + " - " + section["title"] + " - " + s["section"] + ": " + s["paragraph"])
         texts.append(title + ": " + chapter["recommendation"])
+
+    return texts
+
+
+
+def load_instagram_logs(company_name: str, path: str = "project.json"):
+    texts = load_instagram(company_name, path)
+    history = History()
+    for text in texts:
+        history.system(text)
+
+    return history
+
+
+def load_instagram(company_name: str, path: str = "project.json"):
+    data = json_read_file(path)
+    print(data)
+    texts = []
+    meta_info = company_name + " is: "
+    for key in ["research", "improvements"]:
+        if key in data:
+            meta_info += "\n- " + key + ": " + data[key]
+    texts.append(meta_info)
+
+    for chapter in data["posts"]:
+        if "caption" not in chapter:
+            continue
+        texts.append(f"{chapter['caption']}: {chapter['image_summary']} - {chapter['review']} ({' '.join(chapter['hashtags'])})")
 
     return texts
 
