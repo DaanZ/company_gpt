@@ -25,8 +25,8 @@ def load_knowledge_documents(company_name: str, path: str = "project.json"):
     return pages
 
 
-def load_knowledge_logs(path: str = "project.json"):
-    texts = load_knowledge(path)
+def load_knowledge_logs(company_name, path: str = "project.json"):
+    texts = load_knowledge(company_name, path)
     history = History()
     for text in texts:
         history.system(text)

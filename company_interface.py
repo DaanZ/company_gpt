@@ -27,7 +27,7 @@ def create_interface(company_name: str, emoji: str, history: History, optional: 
         if optional:
             st.session_state.history.system(optional)
             with st.chat_message("system"):
-                st.write(optional)
+                st.markdown(optional)
         st.session_state.history.assistant("Hello there, how can I help you? " + emoji + "\n")
 
     # Display all messages
@@ -35,18 +35,18 @@ def create_interface(company_name: str, emoji: str, history: History, optional: 
         if message["role"] == "system":
             continue
         with st.chat_message(message["role"]):
-            st.write(message["content"])
+            st.markdown(message["content"])
 
     user_prompt = st.chat_input()
 
     if user_prompt is not None:
         st.session_state.history.user(user_prompt)
         with st.chat_message("user"):
-            st.write(user_prompt)
+            st.markdown(user_prompt)
 
     if st.session_state.history.logs[-1]["role"] != "assistant":
         with st.chat_message("assistant"):
             with st.spinner("Loading..."):
                 chat = llm_chat(st.session_state.history)
-                st.write(chat)
+                st.markdown(chat)
         st.session_state.history.assistant(chat)
