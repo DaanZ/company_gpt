@@ -1,4 +1,5 @@
 import os
+import openai
 from openai import OpenAI
 
 from langchain_openai import OpenAIEmbeddings
@@ -33,6 +34,27 @@ def llm_chat(message_log: History, model_name: str = "gpt-4o-mini"):
 
     # If no response with text is found, return the first response's content (which may be empty)
     return response.choices[0].message.content
+
+
+def llm_stream(history, model_name: str = "gpt-4o-mini"):
+
+    # Initialize the stream
+    stream  = openai_client.chat.completions.create(
+        model=model_name,  # Adjust model as needed
+        messages=history.logs,
+        stream=True  # Enable streaming
+    )
+
+    assistant_message = ""
+
+    # Stream chunks and concatenate them
+    for chunk in stream:
+
+        if chunk.choices[0].delta.content is not None:
+            choice = chunk.choices[0]
+            if choice.delta and choice.delta.content:
+                assistant_message += choice.delta.content
+            yield assistant_message
 
 
 def llm_summarize(text: str, instructions: str = "Summarize into one paragraph"):

@@ -3,7 +3,6 @@ import streamlit as st
 
 from chatgpt import llm_chat
 from history import History
-from loader import load_knowledge_logs, history_pages
 
 
 def create_interface(company_name: str, emoji: str, history: History, optional: str = "", prompt=None):

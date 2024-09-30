@@ -7,6 +7,7 @@ import streamlit as st
 from company_interface import create_interface
 from history import History
 from loader import history_pages, load_knowledge_logs
+from streaming_interface import streaming_interface
 
 # Global flag to track if the thread has started
 transcript_thread_started = False
@@ -151,7 +152,7 @@ Discrimination, inequality, and identity bias are deeply rooted issues that requ
             history.user(key)
             history.assistant(value)
         print(len(history.logs))
-        create_interface(company_name, emoji, history)
+        streaming_interface(company_name, emoji, history)
     except KeyboardInterrupt:
         print("Program interrupted.")
 
