@@ -4,18 +4,15 @@ import time
 import os
 import streamlit as st
 
-from company_interface import create_interface
 from history import History
-from loader import history_pages, load_knowledge_logs
+from loader import load_knowledge_documents, read_pages
 from streaming_interface import streaming_interface
-
-# Global flag to track if the thread has started
-transcript_thread_started = False
-
 
 from fireflies.fetch import last_transcript_id
 from fireflies.transcript import get_transcript
 
+# Global flag to track if the thread has started
+transcript_thread_started = False
 
 
 def save_transcript_to_file(transcript):
@@ -59,9 +56,9 @@ if __name__ == "__main__":
     # Main program logic (call this function when you want to start the thread)
     try:
         #start_transcript_thread()  # Start the thread, will only start once
-        history: History = history_pages(f"data/{company_id}")
-        history.extend(load_knowledge_logs(company_name, f"data/{company_id}.json"))
-
+        pages = read_pages(f"data/{company_id}")
+        pages.extend(load_knowledge_documents(company_name, f"data/{company_id}.json"))
+        print(len(pages))
         questions = {
             "Beauty Landscape Assessment: What does beauty ‘mean’ today? What is the beauty standard for Gen Z? How do this generation define what beauty is and how is that changing? What is the ‘ugliness’ in the beauty industry and what are the inequalities and biases that perpetuate it? Which beauty brands are taking an activist stance and what do they stand for? What is the role/  opportunity for greater accessibility across the beauty industry?": """What does beauty ‘mean’ today?
 Beauty today is increasingly defined by individuality and self-expression. It’s no longer just about conforming to traditional standards; instead, it celebrates diversity in all its forms. People are embracing their unique features, and beauty is seen as a way to express one's identity, creativity, and personal style. This shift has been largely influenced by social media, where authenticity and relatability are highly valued.
@@ -146,13 +143,13 @@ These forms of discrimination can manifest in various ways, including verbal har
 Conclusion
 Discrimination, inequality, and identity bias are deeply rooted issues that require ongoing awareness, education, and advocacy to address. By understanding the socio-cultural drivers and manifestations of discrimination, we can work towards creating a more inclusive and equitable society for all. If you have any more questions or need further insights, feel free to ask! 💖✨""",
         }
-
+        history = History()
         print("rerun")
         for key, value in questions.items():
             history.user(key)
             history.assistant(value)
         print(len(history.logs))
-        streaming_interface(company_name, emoji, history)
+        streaming_interface(company_name, emoji, history, pages=pages)
     except KeyboardInterrupt:
         print("Program interrupted.")
 

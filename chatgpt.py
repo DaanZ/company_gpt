@@ -45,15 +45,23 @@ def llm_stream(history, model_name: str = "gpt-4o-mini"):
         stream=True  # Enable streaming
     )
 
-    assistant_message = ""
+    return stream
 
+
+def process_stream(stream, openai=True):
+    assistant_message = ""
     # Stream chunks and concatenate them
     for chunk in stream:
-
-        if chunk.choices[0].delta.content is not None:
-            choice = chunk.choices[0]
-            if choice.delta and choice.delta.content:
-                assistant_message += choice.delta.content
+        if openai:
+            if chunk.choices[0].delta.content is not None:
+                choice = chunk.choices[0]
+                if choice.delta and choice.delta.content:
+                    assistant_message += choice.delta.content
+                yield assistant_message
+        else:
+            print(chunk)
+            if chunk["answer"] is not None:
+                assistant_message += chunk["answer"]
             yield assistant_message
 
 

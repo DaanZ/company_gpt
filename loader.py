@@ -34,6 +34,15 @@ def load_knowledge_logs(company_name, path: str = "project.json"):
     return history
 
 
+def load_knowledge_pages(company_name, path: str = "project.json"):
+    texts = load_knowledge(company_name, path)
+    pages = []
+    for text in texts:
+        pages.append(Document(page_content=text))
+
+    return pages
+
+
 def load_knowledge(company_name: str, path: str = "project.json"):
     data = json_read_file(path)
 
@@ -100,10 +109,14 @@ def history_pages(folder):
     for path in glob.glob(paths):
         loader = TextLoader(path, encoding="utf-8")
         text = loader.load()[0].page_content
-        print(text)
         history.system(text)
     return history
 
 
-if __name__ == "__main__":
-    load_knowledge()
+def read_pages(folder):
+    paths = os.path.join(folder, "*.txt")
+    pages = []
+    for path in glob.glob(paths):
+        loader = TextLoader(path, encoding="utf-8")
+        pages.extend(loader.load_and_split())
+    return pages

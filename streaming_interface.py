@@ -1,18 +1,22 @@
 
 import openai
 import streamlit as st
+from langchain.chains.conversational_retrieval.base import ConversationalRetrievalChain
+from langchain_community.vectorstores import FAISS
+from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
-from chatgpt import llm_stream
+from chatgpt import llm_stream, process_stream
 from history import History
 
+chat = ChatOpenAI(model="gpt-4o")
 
-def streaming_interface(company_name: str, emoji: str, history: History, optional: str = "", prompt=None):
+
+def streaming_interface(company_name: str, emoji: str, history: History, optional: str = "", prompt=None, pages=None):
     st.set_page_config(
         page_title=f"{company_name} GPT",
         page_icon=emoji,
         layout="wide"
     )
-
     st.title(f"{company_name} Marketing GPT")
 
     # Initialize history if not already in session state
@@ -53,8 +57,17 @@ def streaming_interface(company_name: str, emoji: str, history: History, optiona
 
         # Stream response
         with st.spinner("Loading..."):
-            response_stream = llm_stream(st.session_state.history)
+            if pages:
+                print("langchain")
+                db = FAISS.from_documents(pages, OpenAIEmbeddings())
+                for response in db.similarity_search(user_prompt, k=3):
+                    print("article: " + response.page_content)
+                    st.session_state.history.system(response.page_content)
+                response_stream = llm_stream(st.session_state.history)
+            else:
+                response_stream = llm_stream(st.session_state.history)
+            answers = process_stream(response_stream)
             chunk = ""
-            for chunk in response_stream:
+            for chunk in answers:
                 assistant_text.markdown(chunk)  # Update progressively
             st.session_state.history.assistant(chunk)  # Save final message in history
