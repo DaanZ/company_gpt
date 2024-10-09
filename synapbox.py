@@ -1,5 +1,5 @@
 from history import History
-from loader import load_instagram_logs
+from loader import load_knowledge_logs
 from streaming_interface import streaming_interface
 
 
@@ -10,7 +10,7 @@ if __name__ == "__main__":
     # Main program logic (call this function when you want to start the thread)
     try:
         print(f"data/{company_id}.json")
-        history: History = load_instagram_logs(company_name, f"data/{company_id}.json")
+        history: History = load_knowledge_logs(company_name, f"data/{company_id}.json")
         print(len(history.logs))
         streaming_interface(company_name, emoji, history)
     except KeyboardInterrupt:
