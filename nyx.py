@@ -50,8 +50,8 @@ def start_transcript_thread():
 
 
 if __name__ == "__main__":
-    company_name = "NYX Cosmetics"
-    emoji = "💄🪞💅"
+    company_name = "Gaia"
+    emoji = "🪞"
     company_id = "nyx"
     # Main program logic (call this function when you want to start the thread)
     try:
