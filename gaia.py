@@ -149,7 +149,7 @@ Discrimination, inequality, and identity bias are deeply rooted issues that requ
         for key, value in questions.items():
             history.system(key)
             history.system(value)
-        history.assistant("I am Grounded World's AI Driven Marketing Assistant.\nHow can I help you?")
+        history.assistant("I am Grounded World's AI.\nHow can I help you?")
         print(len(history.logs))
         streaming_logo_interface(company_name, emoji, history, pages=pages)
     except KeyboardInterrupt:
