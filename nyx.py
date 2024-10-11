@@ -10,6 +10,7 @@ from streaming_interface import streaming_interface
 
 from fireflies.fetch import last_transcript_id
 from fireflies.transcript import get_transcript
+from streaming_logo import streaming_logo_interface
 
 # Global flag to track if the thread has started
 transcript_thread_started = False
@@ -50,7 +51,7 @@ def start_transcript_thread():
 
 
 if __name__ == "__main__":
-    company_name = "Gaia"
+    company_name = "Hello, I'm Gaia."
     emoji = "🪞"
     company_id = "nyx"
     # Main program logic (call this function when you want to start the thread)
@@ -146,10 +147,11 @@ Discrimination, inequality, and identity bias are deeply rooted issues that requ
         history = History()
         print("rerun")
         for key, value in questions.items():
-            history.user(key)
-            history.assistant(value)
+            history.system(key)
+            history.system(value)
+        history.assistant("I am Grounded World's AI Driven Marketing Assistant.\nHow can I help you?")
         print(len(history.logs))
-        streaming_interface(company_name, emoji, history, pages=pages)
+        streaming_logo_interface(company_name, emoji, history, pages=pages)
     except KeyboardInterrupt:
         print("Program interrupted.")
 
