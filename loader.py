@@ -2,7 +2,7 @@ import glob
 import json
 import os
 
-from langchain_community.document_loaders import TextLoader
+from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain_core.documents import Document
 
 from history import History
@@ -10,7 +10,7 @@ from history import History
 
 def json_read_file(file_path):
     try:
-        with open(file_path, 'r') as file:
+        with open(file_path, 'r', encoding="utf-8") as file:
             return json.load(file)
     except FileNotFoundError:
         return []
@@ -120,3 +120,17 @@ def read_pages(folder):
         loader = TextLoader(path, encoding="utf-8")
         pages.extend(loader.load_and_split())
     return pages
+
+
+def conver_pdf(folder):
+    paths = os.path.join(folder, "*.pdf")
+    for path in glob.glob(paths):
+        loader = PyPDFLoader(path)
+        text = "\n".join(text.page_content for text in loader.load())
+        with open(path.replace(".pdf", ".txt"), 'w', encoding="utf-8") as file:
+            file.writelines(text)
+
+
+if __name__ == "__main__":
+
+    conver_pdf("data/nyx")
