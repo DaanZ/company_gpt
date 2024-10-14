@@ -10,7 +10,7 @@ from history import History
 chat = ChatOpenAI(model="gpt-o1")
 
 
-def streaming_logo_interface(company_name: str, emoji: str, history: History, optional: str = "", prompt=None, pages=None):
+def streaming_logo_interface(company_name: str, emoji: str, history: History, optional: str = "", prompt=None, pages=None, background: str = "background.png"):
     st.set_page_config(
         page_title=f"{company_name}",
         page_icon=emoji,
@@ -27,7 +27,7 @@ def streaming_logo_interface(company_name: str, emoji: str, history: History, op
         return encoded_string
 
     # Load the Gaia image (for background)
-    background_image = load_image("images/background.png")
+    background_image = load_image("images/" + background)
 
     # Custom CSS to set the background image to the right and 50% of the width
     st.markdown(f"""
