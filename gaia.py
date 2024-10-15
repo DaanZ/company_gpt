@@ -62,7 +62,7 @@ if __name__ == "__main__":
         print(len(pages))
         history = History()
         print("rerun")
-        history.assistant("I am Grounded World's AI.\nHow can I help you?")
+        history.assistant("Hi, I’m Gaia. What would you like to know?")
         print(len(history.logs))
         streaming_logo_interface(company_name, emoji, history, pages=pages)
     except KeyboardInterrupt:
