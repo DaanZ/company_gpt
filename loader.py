@@ -2,6 +2,7 @@ import glob
 import json
 import os
 
+import rootpath
 from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain_core.documents import Document
 
@@ -32,6 +33,10 @@ def load_knowledge_logs(company_name, path: str = "project.json"):
         history.system(text)
 
     return history
+
+
+def load_knowledge_website(company_id: str):
+    return history_pages(os.path.join(rootpath.detect(), "data", company_id))
 
 
 def load_knowledge_pages(company_name, path: str = "project.json"):
