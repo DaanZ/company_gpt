@@ -127,7 +127,7 @@ def read_pages(folder):
     return pages
 
 
-def conver_pdf(folder):
+def convert_pdf(folder):
     paths = os.path.join(folder, "*.pdf")
     for path in glob.glob(paths):
         loader = PyPDFLoader(path)
@@ -138,4 +138,4 @@ def conver_pdf(folder):
 
 if __name__ == "__main__":
 
-    conver_pdf("data/nyx")
+    convert_pdf("data/dyson")
