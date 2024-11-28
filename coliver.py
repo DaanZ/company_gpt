@@ -1,6 +1,6 @@
 
 from history import History
-from loader import load_knowledge_logs, load_knowledge_website
+from loader import load_knowledge_website
 from streaming_interface import streaming_interface
 
 
