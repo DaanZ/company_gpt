@@ -3,6 +3,7 @@ import openai
 from openai import OpenAI
 
 from langchain_openai import OpenAIEmbeddings
+from pydantic import BaseModel
 
 from history import History
 
@@ -36,7 +37,7 @@ def llm_chat(message_log: History, model_name: str = "gpt-4o-mini"):
     return response.choices[0].message.content
 
 
-def llm_stream(history, model_name: str = "gpt-4o-mini"):
+def llm_stream(history, model_name: str = "gpt-4o"):
 
     # Initialize the stream
     stream  = openai_client.chat.completions.create(
@@ -71,3 +72,20 @@ def llm_summarize(text: str, instructions: str = "Summarize into one paragraph")
     history.system(text)
     history.user(instructions)
     return llm_chat(history)
+
+
+class CalendarEvent(BaseModel):
+    name: str
+    date: str
+    participants: list[str]
+
+
+def llm_strict(history: History, model_name: str = "gpt-4o", base_model: type = CalendarEvent):
+    completion = openai_client.beta.chat.completions.parse(
+        model=model_name,
+        messages=history.logs,
+        response_format=base_model,
+    )
+    return completion.choices[0].message.parsed
+
+
