@@ -80,7 +80,7 @@ class CalendarEvent(BaseModel):
     participants: list[str]
 
 
-def llm_strict(history: History, model_name: str = "gpt-4o", base_model: type = CalendarEvent):
+def llm_strict(history: History, model_name: str = "gpt-4o-mini", base_model: type = CalendarEvent):
     completion = openai_client.beta.chat.completions.parse(
         model=model_name,
         messages=history.logs,
