@@ -37,7 +37,7 @@ def llm_chat(message_log: History, model_name: str = "gpt-4o-mini"):
     return response.choices[0].message.content
 
 
-def llm_stream(history, model_name: str = "gpt-4o"):
+def llm_stream(history, model_name: str = "gpt-4o-mini"):
 
     # Initialize the stream
     stream  = openai_client.chat.completions.create(

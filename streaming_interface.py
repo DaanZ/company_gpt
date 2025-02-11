@@ -1,14 +1,9 @@
-
-import openai
 import streamlit as st
-from langchain.chains.conversational_retrieval.base import ConversationalRetrievalChain
-from langchain_community.vectorstores import FAISS
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_openai import ChatOpenAI
 
 from chatgpt import llm_stream, process_stream
-from history import History
 
-chat = ChatOpenAI(model="gpt-4o")
+chat = ChatOpenAI(model="gpt-4o-mini")
 
 
 def ask_question(user_prompt):
