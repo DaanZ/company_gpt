@@ -1,10 +1,13 @@
+import os
 from functools import partial
 
+import rootpath
 import streamlit as st
 from pydantic import BaseModel, Field
 
 from chatgpt import llm_strict
-from loader import load_knowledge_logs
+from history import History
+from loader import load_knowledge_logs, load_executive
 from streaming_interface import streaming_interface
 
 
@@ -28,7 +31,8 @@ def FAQ_interface(company_id, company_name, emoji):
 
     if "history" not in st.session_state:
         st.session_state.first_run = True
-        st.session_state.history = load_knowledge_logs(company_name, f"data/{company_id}.json")
+        st.session_state.path = os.path.join(rootpath.detect(), "data", f"{company_id}.json")
+        st.session_state.history = load_executive(st.session_state.path)
         st.session_state.history.system(
             f"""You are a very kindly and friendly marketing assistant for {company_name}. 
                         You are currently having a conversation with a marketing person. Answer the questions in a kind and friendly 

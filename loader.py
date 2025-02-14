@@ -27,10 +27,10 @@ def load_knowledge_documents(company_name: str, path: str = "project.json"):
 
 
 def load_knowledge_logs(company_name, path: str = "project.json"):
-    texts = load_knowledge(company_name, path)
+    #texts = load_knowledge(company_name, path)
     history = History()
-    for text in texts:
-        history.system(text)
+    #for text in texts:
+    #    history.system(text)
 
     return history
 
@@ -39,8 +39,8 @@ def load_knowledge_website(company_id: str):
     return history_pages(os.path.join(rootpath.detect(), "data", company_id))
 
 
-def load_knowledge_pages(company_name, path: str = "project.json"):
-    texts = load_knowledge(company_name, path)
+def load_knowledge_pages(path: str = "project.json"):
+    texts = load_knowledge(path)
     pages = []
     for text in texts:
         pages.append(Document(page_content=text))
@@ -48,12 +48,21 @@ def load_knowledge_pages(company_name, path: str = "project.json"):
     return pages
 
 
-def load_knowledge(company_name: str, path: str = "project.json"):
+def load_executive(path):
+    data = json_read_file(path)
+
+    history = History()
+    if "executive summary" in data:
+        history.system(str(data["executive summary"]))
+    return history
+
+
+def load_knowledge(path: str = "project.json"):
     data = json_read_file(path)
 
     texts = []
     keys = ["content", "segment", "product", "industry", "audience", "business"]
-    meta_info = company_name + " is: "
+    meta_info = data["company"]["name"] + " is: "
     for key in keys:
         if key in data:
             meta_info += "\n- " + key + ": " + data[key]
@@ -108,7 +117,7 @@ def load_instagram(company_name: str, path: str = "project.json"):
     return texts
 
 
-def history_pages(folder):
+def history_text(folder):
     paths = os.path.join(folder, "*.txt")
     history = History()
     for path in glob.glob(paths):
@@ -116,6 +125,15 @@ def history_pages(folder):
         text = loader.load()[0].page_content
         history.system(text)
     return history
+
+
+def history_pages(folder):
+    paths = os.path.join(folder, "*.txt")
+    documents = []
+    for path in glob.glob(paths):
+        loader = TextLoader(path, encoding="utf-8")
+        documents.extend(loader.load())
+    return documents
 
 
 def read_pages(folder):
