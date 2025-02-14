@@ -422,4 +422,4 @@ if __name__ == "__main__":
     emoji = "🎾"
     company_id = "centerline_athletics"
 
-    start_menu(company_name, company_id)
+    start_menu(company_name, company_id, system_prompt)

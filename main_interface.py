@@ -49,7 +49,7 @@ def start_interface(company_name: str):
             return answer
 
 
-def start_menu(company_name, company_id):
+def start_menu(company_name, company_id, system_prompt=None):
     if "documents" not in st.session_state:
         st.session_state.path = os.path.join(rootpath.detect(), "data", f"{company_id}.json")
         st.session_state.documents = load_knowledge_pages(st.session_state.path)
@@ -58,6 +58,8 @@ def start_menu(company_name, company_id):
         answer = start_interface(company_name)
         if answer is not None:
             st.session_state.history = load_executive(st.session_state.path)
+            if system_prompt:
+                st.session_state.history.system(system_prompt)
             st.session_state.initial = st.empty()
             st.session_state.question = answer
             st.rerun()
