@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field
 
 from chatgpt import llm_strict
 from history import History
-from loader import load_knowledge_logs, load_executive
+from loader import load_knowledge_logs, load_executive, load_knowledge_pages
 from streaming_interface import streaming_interface
 
 
@@ -26,21 +26,20 @@ def FAQ_interface(company_id, company_name, emoji):
         layout="wide"
     )
     if "first_run" not in st.session_state:
-        st.session_state.first_run = False
+        #st.session_state.first_run = False
         st.session_state.skip = False
 
     if "history" not in st.session_state:
-        st.session_state.first_run = True
+        #st.session_state.first_run = True
         st.session_state.path = os.path.join(rootpath.detect(), "data", f"{company_id}.json")
         st.session_state.history = load_executive(st.session_state.path)
+        st.session_state.documents = load_knowledge_pages(st.session_state.path)
+
         st.session_state.history.system(
             f"""You are a very kindly and friendly marketing assistant for {company_name}. 
                         You are currently having a conversation with a marketing person. Answer the questions in a kind and friendly 
                         way, being the expert for {company_name} to answer any questions about marketing.""")
         st.session_state.history.assistant(f"Hello there, how can I help you? {emoji}\n")
-
-
-        # Main program logic (call this function when you want to start the thread)
     if not st.session_state.skip:
         try:
             streaming_interface(company_name)
@@ -48,7 +47,7 @@ def FAQ_interface(company_id, company_name, emoji):
             print("Program interrupted.")
     else:
         st.session_state.skip = False
-
+    """
     if st.session_state.first_run:
         faq_model: FAQQuestions = llm_strict(st.session_state.history, base_model=FAQQuestions)
         st.markdown("We have prepared some frequently asked questions based on the report we generated:")
@@ -59,3 +58,4 @@ def FAQ_interface(company_id, company_name, emoji):
         st.button("**Content:** " + faq_model.content_question, on_click=partial(streaming_interface, company_name, faq_model.content_question))
         st.session_state.first_run = False
         st.session_state.skip = True
+    """

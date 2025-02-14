@@ -1,14 +1,9 @@
-import os
 
-import rootpath
 import streamlit as st
 from langchain_community.vectorstores import FAISS
-from langchain_openai import ChatOpenAI, OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 
 from chatgpt import llm_stream, process_stream
-from loader import load_knowledge_pages
-
-chat = ChatOpenAI(model="gpt-4o-mini")
 
 
 def ask_question(user_prompt: str):
@@ -22,11 +17,11 @@ def ask_question(user_prompt: str):
 
     # Stream response
     with st.spinner("Loading..."):
-        documents = load_knowledge_pages(st.session_state.path)
-        db = FAISS.from_documents(documents, OpenAIEmbeddings())
+        db = FAISS.from_documents(st.session_state.documents, OpenAIEmbeddings())
         for response in db.similarity_search(user_prompt, k=3):
             print("article: " + response.page_content)
             st.session_state.history.system(response.page_content)
+        st.session_state.history.system("Return answer to the user in markdown:")
         response_stream = llm_stream(st.session_state.history)
         answers = process_stream(response_stream)
         chunk = ""

@@ -1,7 +1,7 @@
 import streamlit
 
-from history import History
 from loader import load_knowledge_logs
+from main_interface import start_menu
 from streaming_interface import streaming_interface
 
 system_prompt = """Act like a professional marketing strategist and craft a comprehensive marketing strategy for Centerline Athletics.
@@ -422,15 +422,4 @@ if __name__ == "__main__":
     emoji = "🎾"
     company_id = "centerline_athletics"
 
-    if "history" not in streamlit.session_state:
-        streamlit.session_state.history = load_knowledge_logs(company_name, f"data/{company_id}.json")
-        streamlit.session_state.history.system(system_prompt)
-        streamlit.session_state.history.system(context)
-
-    # Main program logic (call this function when you want to start the thread)
-    try:
-        print(len(streamlit.session_state.history.logs))
-
-        streaming_interface(company_name, emoji, streamlit.session_state.history)
-    except KeyboardInterrupt:
-        print("Program interrupted.")
+    start_menu(company_name, company_id)
