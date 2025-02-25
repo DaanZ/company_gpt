@@ -1,14 +1,11 @@
 import os
-from functools import partial
 
 import rootpath
 import streamlit as st
 from pydantic import BaseModel, Field
 
-from chatgpt import llm_strict
-from history import History
-from loader import load_knowledge_logs, load_executive, load_knowledge_pages
-from streaming_interface import streaming_interface
+from core.loader import load_executive, load_knowledge_pages
+from core.streaming_interface import streaming_interface
 
 
 class FAQQuestions(BaseModel):

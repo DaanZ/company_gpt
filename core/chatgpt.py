@@ -1,10 +1,14 @@
 import os
+
+from dotenv import load_dotenv
 from openai import OpenAI
 
 from langchain_openai import OpenAIEmbeddings
 from pydantic import BaseModel
 
-from history import History
+from core.history import History
+
+load_dotenv()
 
 openai_client = OpenAI(api_key=os.environ['OPENAI_API_KEY'])
 openai_embeddings = OpenAIEmbeddings()

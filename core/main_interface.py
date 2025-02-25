@@ -1,9 +1,14 @@
+import uuid
+from datetime import datetime
 import os
 
 import rootpath
 import streamlit as st
-from loader import load_executive, load_knowledge_pages
-from streaming_interface import streaming_interface
+
+from core.files import json_write_file
+from core.loader import load_executive, read_pdfs, json_read_file, load_knowledge, load_knowledge_pages
+from core.streaming_interface import streaming_interface
+from core.vault.conversation import Conversation
 
 
 def start_stream(submitted):
@@ -50,16 +55,21 @@ def start_interface(company_name: str):
 
 
 def start_menu(company_name, company_id, system_prompt=None):
+    if "session_id" not in st.session_state:
+        st.session_state.session_id = str(uuid.uuid4())
+
     if "documents" not in st.session_state:
         st.session_state.path = os.path.join(rootpath.detect(), "data", f"{company_id}.json")
+        # TODO differently reading documents
         st.session_state.documents = load_knowledge_pages(st.session_state.path)
+        print(len(st.session_state.documents))
 
-    if "history" not in st.session_state:
+    if "conversation" not in st.session_state:
         answer = start_interface(company_name)
         if answer is not None:
-            st.session_state.history = load_executive(st.session_state.path)
+            st.session_state.conversation = load_executive(st.session_state.path)
             if system_prompt:
-                st.session_state.history.system(system_prompt)
+                st.session_state.conversation.system(system_prompt)
             st.session_state.initial = st.empty()
             st.session_state.question = answer
             st.rerun()

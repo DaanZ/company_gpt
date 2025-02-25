@@ -1,13 +1,17 @@
+import os
 
 import streamlit as st
 from langchain_community.vectorstores import FAISS
 from langchain_openai import OpenAIEmbeddings
+from pydantic import Field, BaseModel
 
-from chatgpt import llm_stream, process_stream
+from core.chatgpt import llm_stream, process_stream, llm_strict
+from core.files import json_write_file, json_read_file
+from core.history import History
 
 
 def ask_question(user_prompt: str):
-    st.session_state.history.user(user_prompt)
+    st.session_state.conversation.user(user_prompt)
     with st.chat_message("user"):
         st.markdown(user_prompt)
 
@@ -20,21 +24,26 @@ def ask_question(user_prompt: str):
         db = FAISS.from_documents(st.session_state.documents, OpenAIEmbeddings())
         for response in db.similarity_search(user_prompt, k=3):
             print("article: " + response.page_content)
-            st.session_state.history.system(response.page_content)
-        st.session_state.history.system("Return answer to the user in markdown:")
-        response_stream = llm_stream(st.session_state.history)
+            st.session_state.conversation.system(response.page_content)
+        st.session_state.conversation.system("Return answer to the user in markdown:")
+        response_stream = llm_stream(st.session_state.conversation)
         answers = process_stream(response_stream)
         chunk = ""
         for chunk in answers:
             assistant_text.markdown(chunk)  # Update progressively
-        st.session_state.history.assistant(chunk)  # Save final message in history
+        st.session_state.conversation.assistant(chunk)  # Save final message in history
+    return chunk
+
+
+class TitleConversationModel(BaseModel):
+    title: str = Field(..., description="Short title of the conversation so far.")
 
 
 def streaming_interface(company_name: str, question=None):
     st.title(f"{company_name} GPT")
 
     # Display all previous messages
-    for message in st.session_state.history.logs:
+    for message in st.session_state.conversation.logs:
         if message["role"] == "system":
             continue
         with st.chat_message(message["role"]):
@@ -45,4 +54,5 @@ def streaming_interface(company_name: str, question=None):
         question = user_prompt
 
     if question:
-        ask_question(question)
+
+        chunk = ask_question(question)

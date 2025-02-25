@@ -4,13 +4,14 @@ import streamlit as st
 from langchain_community.vectorstores import FAISS
 from langchain_openai import ChatOpenAI, OpenAIEmbeddings
 
-from chatgpt import llm_stream, process_stream
-from history import History
+from core.chatgpt import llm_stream, process_stream
+from core.history import History
+from core.vault.conversation import Conversation
 
 chat = ChatOpenAI(model="gpt-o1")
 
 
-def streaming_logo_interface(company_name: str, emoji: str, history: History, optional: str = "", prompt=None, pages=None, background: str = "background.png"):
+def streaming_logo_interface(company_name: str, emoji: str, conversation: Conversation, optional: str = "", prompt=None, pages=None, background: str = "background.png"):
     st.set_page_config(
         page_title=f"{company_name}",
         page_icon=emoji,
@@ -46,23 +47,23 @@ def streaming_logo_interface(company_name: str, emoji: str, history: History, op
     col1, col2 = st.columns([7,3])
     with col1:
         # Initialize history if not already in session state
-        if "history" not in st.session_state.keys():
-            st.session_state.history = history
+        if "conversation" not in st.session_state.keys():
+            st.session_state.conversation = conversation
             if prompt is None:
-                st.session_state.history.system(
+                st.session_state.conversation.system(
                     f"""You are a very kindly and friendly marketing assistant for {company_name}. 
                 You are currently having a conversation with a marketing person. Answer the questions in a kind and friendly 
                 way, being the expert for {company_name} to answer any questions about marketing.""")
             else:
-                st.session_state.history.system(prompt)
+                st.session_state.conversation.system(prompt)
 
             if optional:
-                st.session_state.history.system(optional)
+                st.session_state.conversation.system(optional)
                 with st.chat_message("system"):
                     st.markdown(optional)
 
         # Display all previous messages
-        for message in st.session_state.history.logs:
+        for message in st.session_state.conversation.logs:
             if message["role"] == "system":
                 continue
             with st.chat_message(message["role"]):
@@ -72,7 +73,7 @@ def streaming_logo_interface(company_name: str, emoji: str, history: History, op
 
     with col1:
         if user_prompt is not None:
-            st.session_state.history.user(user_prompt)
+            st.session_state.conversation.user(user_prompt)
             with st.chat_message("user"):
                 st.markdown(user_prompt)
 
@@ -87,12 +88,12 @@ def streaming_logo_interface(company_name: str, emoji: str, history: History, op
                     db = FAISS.from_documents(pages, OpenAIEmbeddings())
                     for response in db.similarity_search(user_prompt, k=3):
                         print("article: " + response.page_content)
-                        st.session_state.history.system(response.page_content)
-                    response_stream = llm_stream(st.session_state.history)
+                        st.session_state.conversation.system(response.page_content)
+                    response_stream = llm_stream(st.session_state.conversation)
                 else:
-                    response_stream = llm_stream(st.session_state.history)
+                    response_stream = llm_stream(st.session_state.conversation)
                 answers = process_stream(response_stream)
                 chunk = ""
                 for chunk in answers:
                         assistant_text.markdown(chunk)  # Update progressively
-                st.session_state.history.assistant(chunk)  # Save final message in history
+                st.session_state.conversation.assistant(chunk)  # Save final message in history

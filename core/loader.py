@@ -6,7 +6,8 @@ import rootpath
 from langchain_community.document_loaders import TextLoader, PyPDFLoader
 from langchain_core.documents import Document
 
-from history import History
+from core.history import History
+from core.vault.conversation import Conversation
 
 
 def json_read_file(file_path):
@@ -145,13 +146,16 @@ def read_pages(folder):
     return pages
 
 
-def convert_pdf(folder):
+def read_pdfs(folder):
     paths = os.path.join(folder, "*.pdf")
+    pages = []
     for path in glob.glob(paths):
         loader = PyPDFLoader(path)
-        text = "\n".join(text.page_content for text in loader.load())
-        with open(path.replace(".pdf", ".txt"), 'w', encoding="utf-8") as file:
-            file.writelines(text)
+        pages.extend(loader.load_and_split())
+        #text = "\n".join(text.page_content for text in loader.load())
+        #with open(path.replace(".pdf", ".txt"), 'w', encoding="utf-8") as file:
+        #    file.writelines(text)
+    return pages
 
 
 if __name__ == "__main__":

@@ -1,8 +1,8 @@
 
 import streamlit as st
 
-from chatgpt import llm_chat
-from history import History
+from core.chatgpt import llm_chat
+from core.history import History
 
 
 def create_interface(company_name: str, emoji: str, history: History, optional: str = "", prompt=None):
@@ -17,7 +17,7 @@ def create_interface(company_name: str, emoji: str, history: History, optional: 
     # check for messages in session and create if not exists
     if "history" not in st.session_state.keys():
         st.session_state.history = history
-        if prompt == None:
+        if prompt is None:
             st.session_state.history.system(f"""You are a very kindly and friendly marketing assistant for {company_name}. You are
             currently having a conversation with a marketing person. Answer the questions in a kind and friendly 
             with you being the expert for {company_name} to answer any questions about marketing.""")
