@@ -1,5 +1,4 @@
-from faq import FAQ_interface
-
+from core.faq import FAQ_interface
 
 if __name__ == "__main__":
     company_name = "Syrup Marketing"
